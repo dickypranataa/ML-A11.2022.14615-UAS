@@ -34,11 +34,17 @@ r2 = r2_score(y_test, y_pred)
 print('Mean Squared Error:', mse)
 print('Coefficient of Determination (R^2):', r2)
 
-# Visualisasi hasil prediksi
-plt.scatter(y_test, y_pred)
-plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='-', linewidth=2)  # Garis 45 derajat
-plt.xlabel('Nilai Sebenarnya')
-plt.ylabel('Nilai Diprediksi')
-plt.title('Nilai Sebenarnya vs Nilai Diprediksi')
-plt.show()
+# Ubah nilai harga untuk nilai sebenarnya dan nilai prediksi
+harga_sebenarnya = X_test['harga']
+harga_prediksi = y_pred
 
+# Visualisasi hasil prediksi
+plt.figure(figsize=(8, 6))
+plt.scatter(harga_sebenarnya, harga_prediksi, label='Predicted')
+plt.plot([min(harga_sebenarnya), max(harga_sebenarnya)], [min(harga_sebenarnya), max(harga_sebenarnya)], color='red', linestyle='-', linewidth=2, label='45° Line')
+plt.xlabel('Harga Sebenarnya')
+plt.ylabel('Harga Diprediksi')
+plt.title('Harga Sebenarnya vs Harga Diprediksi')
+plt.legend()
+plt.grid(True)
+plt.show()
