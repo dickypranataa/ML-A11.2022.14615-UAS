@@ -22,6 +22,14 @@ Harga bahan pokok seringkali mengalami fluktuasi yang signifikan karena berbagai
 3. Mengidentifikasi fitur-fitur penting yang mempengaruhi harga bahan pokok.
 
 ### Model / Alur Penyelesaian
+graph TD;
+    A[Pengumpulan Data] --> B[Eksplorasi Data dan Praproses];
+    B --> C[Pemisahan Data Latih dan Data Uji];
+    C --> D1[Grid Search dengan K-Fold Cross-Validation];
+    C --> D2[Pelatihan Model Linear Regression];
+    D1 --> E[Evaluasi Model];
+    D2 --> E[Evaluasi Model];
+    E --> F[Diskusi dan Kesimpulan];
 
 ![Alur Penyelesaian](path_to_your_flowchart_image.png)
 
