@@ -233,8 +233,8 @@ Evaluasi model dilakukan menggunakan metrik Mean Squared Error (MSE) dan Coeffic
 
 #### Hasil Evaluasi Model XGBoost
 
-- **Mean Squared Error (MSE)**: 8.504458243351694
-- **Coefficient of Determination (R^2)**: -0.27048309123241787
+- **Mean Squared Error (MSE)**: 6.07589941701037
+- **Coefficient of Determination (R^2)**: 0.09231990416613367
 
 ### Visualisasi Hasil Prediksi
 
