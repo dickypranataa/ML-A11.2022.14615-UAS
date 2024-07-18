@@ -1,9 +1,9 @@
 # Prediksi Harga Bahan Pokok Menggunakan XGBoost dan Linear Regression
 
 ## Identitas Lengkap
-- **Nama:** [Nama Lengkap Anda]
-- **NIM:** [NIM Anda]
-- **Mata Kuliah:** [Nama Mata Kuliah]
+- **Nama:** Dicky Pranata
+- **NIM:** A11.2022.14615
+- **Mata Kuliah:** Pembelajaran Mesin
 - **Dosen:** [Nama Dosen]
 
 ---
