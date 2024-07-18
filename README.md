@@ -22,6 +22,7 @@ Harga bahan pokok seringkali mengalami fluktuasi yang signifikan karena berbagai
 3. Mengidentifikasi fitur-fitur penting yang mempengaruhi harga bahan pokok.
 
 ### Model / Alur Penyelesaian
+```mermaid
 graph TD;
     A[Pengumpulan Data] --> B[Eksplorasi Data dan Praproses];
     B --> C[Pemisahan Data Latih dan Data Uji];
@@ -30,7 +31,7 @@ graph TD;
     D1 --> E[Evaluasi Model];
     D2 --> E[Evaluasi Model];
     E --> F[Diskusi dan Kesimpulan];
-
+```
 ![Alur Penyelesaian](path_to_your_flowchart_image.png)
 
 ---
@@ -65,3 +66,4 @@ sns.boxplot(x='bahan_pokok', y='januari', data=data)
 plt.xticks(rotation=90)
 plt.title('Distribusi Harga Bahan Pokok di Bulan Januari')
 plt.show()
+```
