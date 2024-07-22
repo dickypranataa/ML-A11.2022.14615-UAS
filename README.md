@@ -1,38 +1,39 @@
-# Prediksi Harga Bahan Pokok Menggunakan XGBoost dan Linear Regression
+# Prediksi Kuantitas Penjualan Beras Menggunakan Random Forest Regressor
 
 ## Identitas Lengkap
-- **Nama:** Dicky Pranata
-- **NIM:** A11.2022.14615
-- **Mata Kuliah:** Pembelajaran Mesin
-- **Dosen:** [Nama Dosen]
-
----
+**Nama:** Dicky Pranata  
+**NIM:** A11.2022.14615 
+**Mata Kuliah:** Pembelajaran Mesin 
+**Kelas:** [A11.4412]
 
 ## Ringkasan dan Permasalahan Project
-
 ### Ringkasan
-Proyek ini bertujuan untuk memprediksi harga bahan pokok menggunakan algoritma XGBoost dan Linear Regression. Data yang digunakan adalah harga bulanan dari berbagai bahan pokok. Model dibangun untuk memprediksi harga di masa depan berdasarkan data historis.
+Proyek ini bertujuan untuk memprediksi kuantitas penjualan beras menggunakan model Random Forest Regressor. Dataset yang digunakan adalah data historis penjualan barang yang mencakup informasi kuantitas penjualan per tanggal.
 
 ### Permasalahan
-Harga bahan pokok seringkali mengalami fluktuasi yang signifikan karena berbagai faktor ekonomi dan sosial. Memiliki model yang dapat memprediksi harga di masa depan akan sangat berguna untuk perencanaan dan pengambilan keputusan.
+Dalam bisnis pertanian, khususnya penjualan beras, penting untuk memprediksi kuantitas penjualan di masa depan agar dapat mengelola stok dengan lebih baik, menghindari kekurangan atau kelebihan stok, serta membuat keputusan strategis yang lebih baik.
 
-### Tujuan
-1. Membangun model prediksi harga bahan pokok menggunakan XGBoost dan Linear Regression.
-2. Membandingkan kinerja model yang dibangun.
-3. Mengidentifikasi fitur-fitur penting yang mempengaruhi harga bahan pokok.
+### Tujuan yang Akan Dicapai
+1. Mengembangkan model prediksi kuantitas penjualan beras menggunakan algoritma Random Forest Regressor.
+2. Mengevaluasi kinerja model menggunakan metrik Mean Squared Error (MSE) dan R-squared (R2).
+3. Melakukan tuning hyperparameter untuk meningkatkan akurasi model.
+4. Membuat visualisasi prediksi kuantitas penjualan beras dibandingkan dengan nilai aktual.
 
 ### Model / Alur Penyelesaian
+Berikut adalah bagan alur penyelesaian proyek ini:
+
 ```mermaid
-graph TD;
-    A[Pengumpulan Data] --> B[Eksplorasi Data dan Praproses];
-    B --> C[Pemisahan Data Latih dan Data Uji];
-    C --> D1[Grid Search dengan K-Fold Cross-Validation];
-    C --> D2[Pelatihan Model Linear Regression];
-    D1 --> E[Evaluasi Model];
-    D2 --> E[Evaluasi Model];
-    E --> F[Diskusi dan Kesimpulan];
+graph LR
+    A[Memuat dan Memproses Dataset] --> B[Pivoting Dataset]
+    B --> C[Membuat Fitur Tambahan]
+    C --> D[Mengatasi Missing Values]
+    D --> E[Membagi Data menjadi Train dan Test]
+    E --> F[Membangun Model Random Forest Regressor]
+    F --> G[Melakukan Prediksi dan Evaluasi Model]
+    G --> H[Hyperparameter Tuning]
+    H --> I[Prediksi dan Evaluasi dengan Model Terbaik]
+    I --> J[Membuat Visualisasi Prediksi]
 ```
-![Alur Penyelesaian](path_to_your_flowchart_image.png)
 
 ---
 
