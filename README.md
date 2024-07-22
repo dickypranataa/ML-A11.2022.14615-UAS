@@ -7,24 +7,27 @@
 -  **Kelas:** A11.4412
 
 ## Ringkasan dan Permasalahan Project
+
 ### Ringkasan
-Proyek ini bertujuan untuk memprediksi kuantitas penjualan beras menggunakan model Random Forest Regressor. Dataset yang digunakan adalah data historis penjualan barang yang mencakup informasi kuantitas penjualan per tanggal.
+Proyek ini bertujuan untuk mengembangkan dan menerapkan model prediksi kuantitas penjualan beras menggunakan algoritma Random Forest Regressor. Model ini dirancang untuk memprediksi jumlah kuantitas beras yang akan terjual pada periode mendatang berdasarkan data historis penjualan. Dataset yang digunakan dalam proyek ini mencakup informasi kuantitas penjualan per tanggal, termasuk detail mengenai jenis barang yang dijual, serta informasi terkait tanggal transaksi. Dengan memanfaatkan teknik machine learning yang canggih seperti Random Forest, proyek ini bertujuan untuk memberikan prediksi yang akurat dan dapat diandalkan yang akan membantu pengelolaan inventaris dan perencanaan strategis.
 
 ### Permasalahan
-Dalam bisnis pertanian, khususnya penjualan beras, penting untuk memprediksi kuantitas penjualan di masa depan agar dapat mengelola stok dengan lebih baik, menghindari kekurangan atau kelebihan stok, serta membuat keputusan strategis yang lebih baik.
+Dalam konteks bisnis pertanian, khususnya dalam penjualan beras, perencanaan yang efisien dan akurat sangat penting untuk menjaga keseimbangan antara pasokan dan permintaan. Tanpa sistem prediksi yang baik, perusahaan mungkin menghadapi masalah seperti kekurangan stok yang dapat mengakibatkan kehilangan penjualan dan ketidakpuasan pelanggan, atau kelebihan stok yang menyebabkan biaya penyimpanan yang tinggi dan potensi pemborosan. Dengan memprediksi kuantitas penjualan secara akurat, perusahaan dapat mengelola inventaris mereka dengan lebih baik, menghindari masalah terkait stok, dan membuat keputusan strategis yang lebih informasional mengenai pembelian dan penjualan.
 
 ### Tujuan yang Akan Dicapai
-1. Mengembangkan model prediksi kuantitas penjualan beras menggunakan algoritma Random Forest Regressor.
-2. Mengevaluasi kinerja model menggunakan metrik Mean Squared Error (MSE) dan R-squared (R2).
-3. Melakukan tuning hyperparameter untuk meningkatkan akurasi model.
-4. Membuat visualisasi prediksi kuantitas penjualan beras dibandingkan dengan nilai aktual.
+1. **Mengembangkan Model Prediksi Kuantitas Penjualan Beras**: Membangun dan melatih model menggunakan algoritma Random Forest Regressor untuk memprediksi kuantitas penjualan beras di masa depan berdasarkan data historis.
+2. **Evaluasi Kinerja Model**: Mengukur efektivitas model menggunakan metrik statistik seperti Mean Squared Error (MSE) dan R-squared (R2) untuk menentukan seberapa baik model dapat memprediksi kuantitas penjualan.
+3. **Tuning Hyperparameter**: Melakukan pencarian dan tuning hyperparameter untuk meningkatkan akurasi model dan memastikan bahwa model berfungsi secara optimal.
+4. **Visualisasi Prediksi**: Membuat visualisasi yang membandingkan hasil prediksi kuantitas penjualan beras dengan nilai aktual untuk memberikan wawasan yang jelas dan mendalam mengenai performa model serta membantu dalam interpretasi hasil.
+
 
 ### Model / Alur Penyelesaian
 Berikut adalah bagan alur penyelesaian proyek ini:
 
 ```mermaid
-graph LR
-    A[Memuat dan Memproses Dataset] --> B[Pivoting Dataset]
+graph TD
+    A[Memuat dan Memproses Dataset]
+    A --> B[Pivoting Dataset]
     B --> C[Membuat Fitur Tambahan]
     C --> D[Mengatasi Missing Values]
     D --> E[Membagi Data menjadi Train dan Test]
