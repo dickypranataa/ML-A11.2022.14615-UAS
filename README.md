@@ -44,7 +44,7 @@ graph TD
 
 ### Penjelasan Dataset
 
-#### `penjualan_barang.csv`
+#### `Dataset\penjualan_barang.csv`
 Dataset ini berisi data penjualan barang dengan kolom-kolom sebagai berikut:
 
 | **Tanggal** | **Nama Pembeli** | **Nama Barang** | **Kuantum** | **Nominal** |
@@ -56,7 +56,7 @@ Dataset ini berisi data penjualan barang dengan kolom-kolom sebagai berikut:
 | 2020-01-02  | TOKO APRILIA SUKRISNI | TEPUNG   | 140         | 1,162,000   |
 | ..........  | ..................... | ......   | ...         | .........   |
 
-#### `pemasukan_barang.csv`
+#### `Dataset\pemasukan_barang.csv`
 Dataset ini berisi data pemasukan barang dengan kolom-kolom sebagai berikut:
 
 | **Tanggal** | **Nama Barang** | **Kuantum** |
