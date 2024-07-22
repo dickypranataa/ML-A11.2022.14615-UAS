@@ -1,10 +1,10 @@
 # Prediksi Kuantitas Penjualan Beras Menggunakan Random Forest Regressor
 
 ## Identitas Lengkap
-**Nama:** Dicky Pranata  
-**NIM:** A11.2022.14615 
-**Mata Kuliah:** Pembelajaran Mesin 
-**Kelas:** [A11.4412]
+-  **Nama:** Dicky Pranata  
+-  **NIM:** A11.2022.14615 
+-  **Mata Kuliah:** Pembelajaran Mesin 
+-  **Kelas:** A11.4412
 
 ## Ringkasan dan Permasalahan Project
 ### Ringkasan
@@ -37,237 +37,309 @@ graph LR
 
 ---
 
-## Penjelasan Dataset, EDA dan Proses Features Dataset
+## Penjelasan Dataset, EDA, dan Proses Features Dataset
 
 ### Penjelasan Dataset
 
-Dataset yang digunakan dalam proyek ini berisi data harga bulanan dari berbagai bahan pokok. Dataset ini memiliki kolom-kolom yang mewakili harga bahan pokok setiap bulan dari Januari hingga Desember, serta kolom yang menunjukkan jenis bahan pokok. Berikut adalah kolom-kolom yang ada dalam dataset:
+#### `penjualan_barang.csv`
+Dataset ini berisi data penjualan barang dengan kolom-kolom sebagai berikut:
 
-- `januari`: Harga bahan pokok pada bulan Januari
-- `februari`: Harga bahan pokok pada bulan Februari
-- `maret`: Harga bahan pokok pada bulan Maret
-- `april`: Harga bahan pokok pada bulan April
-- `mei`: Harga bahan pokok pada bulan Mei
-- `juni`: Harga bahan pokok pada bulan Juni
-- `juli`: Harga bahan pokok pada bulan Juli
-- `agustus`: Harga bahan pokok pada bulan Agustus
-- `september`: Harga bahan pokok pada bulan September
-- `oktober`: Harga bahan pokok pada bulan Oktober
-- `november`: Harga bahan pokok pada bulan November
-- `desember`: Harga bahan pokok pada bulan Desember
-- `bahan_pokok`: Jenis bahan pokok
+| **Tanggal** | **Nama Pembeli** | **Nama Barang** | **Kuantum** | **Nominal** |
+|-------------|------------------|-----------------|-------------|-------------|
+| 2020-01-02  | TOKO HERUNIAWATI| BERAS           | 1000        | 9,840,000   |
+| 2020-01-02  | TOKO HERUNIAWATI| DAGING          | 120         | 8,400,000   |
+| 2020-01-02  | TOKO APRILIA SUKRISNI | BERAS    | 6000        | 62,910,000  |
+| 2020-01-02  | TOKO APRILIA SUKRISNI | MIGOR    | 408         | 4,855,200   |
+| 2020-01-02  | TOKO APRILIA SUKRISNI | TEPUNG   | 140         | 1,162,000   |
+| ..........  | ..................... | ......   | ...         | .........   |
 
-### Eksplorasi Data dan Praproses
+#### `pemasukan_barang.csv`
+Dataset ini berisi data pemasukan barang dengan kolom-kolom sebagai berikut:
 
-Eksplorasi Data Awal (EDA) dilakukan untuk memahami distribusi dan pola dalam data. Berikut adalah langkah-langkah yang diambil dalam EDA dan praproses data:
+| **Tanggal** | **Nama Barang** | **Kuantum** |
+|-------------|-----------------|-------------|
+| 2020-05-29  | GULA            | 100,000     |
+| 2020-07-07  | GULA            | 97,950      |
+| 2020-07-16  | GULA            | 2,050       |
+| 2020-11-12  | GULA            | 14,000      |
+| 2020-12-24  | GULA            | 8,000       |
+| ..........  | ....            | .....       |
 
-1. **Membaca Dataset**: Dataset dibaca menggunakan `pandas`.
-2. **Eksplorasi Data Awal**: Menampilkan beberapa baris pertama dari dataset dan deskripsi statistik dasar.
-3. **Visualisasi Data**: Membuat histogram untuk setiap kolom untuk melihat distribusi data.
-4. **Pengisian Nilai yang Hilang**: Mengisi nilai yang hilang (jika ada) menggunakan metode forward fill.
-5. **Pengkodean Label**: Mengkodekan kolom target (`bahan_pokok`) menggunakan `LabelEncoder`.
-6. **Standardisasi Fitur**: Menstandardisasi fitur menggunakan `StandardScaler`.
+### Eksplorasi Data Awal (EDA)
 
-### Kode EDA dan Praproses
+1. **Memuat Dataset**: 
+   Dataset dimuat dari file CSV menggunakan Pandas untuk analisis lebih lanjut.
 
-```python
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+2. **Memeriksa Data**:
+   Melihat beberapa baris awal dari dataset untuk memahami strukturnya dan memastikan data telah dimuat dengan benar.
 
-# Baca dataset
-data = pd.read_csv('DataPenjualan.csv')
+3. **Statistik Deskriptif**:
+   Menghitung statistik deskriptif untuk kolom `kuantum` dan `nominal`, seperti mean, median, standar deviasi, dan distribusi data.
 
-# Eksplorasi Data
-print(data.head())
-print(data.describe())
+4. **Visualisasi Data**:
+   - **Histogram Kuantitas Penjualan**: Menampilkan distribusi kuantitas penjualan untuk menganalisis pola umum.
+   - **Grafik Garis**: Mengamati tren kuantitas penjualan dari waktu ke waktu untuk setiap barang.
 
-# Visualisasi distribusi data
-data.hist(bins=30, figsize=(15, 10))
-plt.show()
+### Proses Pembuatan Fitur
 
-# Praproses Data
-# Pengisian nilai yang hilang (jika ada)
-data.fillna(method='ffill', inplace=True)
+1. **Transformasi Tanggal**:
+   - Mengubah kolom `tanggal` menjadi format datetime.
+   - Menambahkan fitur tambahan seperti tahun (`year`), bulan (`month`), dan hari (`day`) dari kolom `tanggal`.
 
-# Pengkodean label untuk kolom target
-label_encoder = LabelEncoder()
-data['bahan_pokok_encoded'] = label_encoder.fit_transform(data['bahan_pokok'])
+2. **Fitur Musiman**:
+   - Menambahkan fitur seperti hari dalam minggu (`dayofweek`), kuartal (`quarter`), dan minggu dalam tahun (`weekofyear`).
 
-# Standardisasi fitur
-scaler = StandardScaler()
-features = data[['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember']]
-features_scaled = scaler.fit_transform(features)
+3. **Fitur Transformasi Waktu**:
+   - Menambahkan fitur sinus dan kosinus dari bulan dan hari untuk menangkap pola musiman dengan lebih baik.
 
-# Tambahkan fitur yang sudah distandardisasi ke dataframe
-data_scaled = pd.DataFrame(features_scaled, columns=features.columns)
-data_scaled['bahan_pokok_encoded'] = data['bahan_pokok_encoded']
-```
+4. **Fitur Lagged dan Moving Average**:
+   - Menambahkan fitur lagged (misalnya, `BERAS_lag1`, `BERAS_lag2`) untuk menangkap pola historis penjualan.
+   - Menambahkan fitur moving average (misalnya, `BERAS_MA7`, `BERAS_MA30`) untuk menangkap tren jangka panjang.
+
+5. **Fitur Perubahan Harian**:
+   - Menambahkan fitur perubahan harian (`BERAS_diff1`) untuk menangkap fluktuasi harian.
+
+6. **Fitur Interaksi dan Statistik Rolling**:
+   - Menambahkan fitur interaksi (misalnya, `month_day_interaction`) dan statistik rolling (misalnya, `BERAS_rolling_std_7`).
+
+7. **Fitur Transformasi Kuantum**:
+   - Menambahkan fitur logaritma dari kuantitas (`BERAS_log`) untuk menangkap distribusi data dan mengurangi skewness.
+
+8. **Mengatasi Missing Values**:
+   - Menghapus nilai NaN yang dihasilkan dari fitur lagged dan moving average.
+
 ## Proses Learning/Modeling
 
-### Proses Learning/Modeling
+Pada bagian ini, kami akan menjelaskan proses modeling untuk memprediksi kuantitas penjualan barang, khususnya untuk "BERAS". Model yang digunakan adalah Random Forest Regressor, yang dipilih karena kemampuannya untuk menangani data yang kompleks dan tidak linier. Selain itu, proses hyperparameter tuning dilakukan untuk menemukan model dengan performa terbaik.
 
-Proses learning dan modeling dilakukan untuk membangun model prediksi harga bahan pokok menggunakan algoritma XGBoost dan Linear Regression sebagai baseline. Berikut adalah langkah-langkah yang dilakukan dalam proses ini:
+### Langkah-Langkah Proses Modeling
 
-1. **Pemisahan Data**: Data dipisahkan menjadi data latih dan data uji.
-2. **Inisialisasi Model**: Model XGBoost dan Linear Regression diinisialisasi.
-3. **Pencarian Parameter Terbaik**: Grid Search dengan K-Fold Cross-Validation digunakan untuk menemukan parameter terbaik dari model XGBoost.
-4. **Pelatihan Model**: Model dilatih menggunakan data latih.
-5. **Evaluasi Model**: Model dievaluasi menggunakan data uji dengan metrik Mean Squared Error (MSE) dan Coefficient of Determination (R^2).
+1. **Pemrosesan Data**:
+   - Mengimpor dataset dari file CSV.
+   - Mengubah kolom tanggal menjadi format datetime.
+   - Melakukan pivot tabel untuk mendapatkan fitur-fitur yang diperlukan.
+   - Membuat fitur tambahan untuk menangkap pola musiman dan temporal.
 
-### Kode Proses Learning/Modeling
+2. **Pembuatan Fitur**:
+   - Fitur transformasi waktu seperti sin dan cos bulan dan hari.
+   - Fitur lagged, moving average, dan perubahan harian untuk menangkap pola historis.
+   - Fitur interaksi dan statistik rolling untuk analisis yang lebih mendalam.
+
+3. **Pemisahan Data**:
+   - Membagi data menjadi set pelatihan (training) dan pengujian (testing).
+
+4. **Pelatihan Model**:
+   - Menggunakan Random Forest Regressor untuk melatih model.
+
+5. **Evaluasi Model**:
+   - Mengukur performa model menggunakan Mean Squared Error (MSE) dan R-squared (R2).
+
+6. **Hyperparameter Tuning**:
+   - Melakukan Grid Search untuk menemukan kombinasi hyperparameter yang optimal.
+
+7. **Visualisasi Hasil**:
+   - Membuat plot untuk membandingkan nilai aktual dengan prediksi.
+   - Menampilkan grafik tren kuantitas penjualan dan prediksi.
+
+### Kode Lengkap
 
 ```python
 import pandas as pd
-from sklearn.model_selection import train_test_split, KFold, GridSearchCV, cross_val_score
+import numpy as np
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-import xgboost as xgb
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 import matplotlib.pyplot as plt
 
-# Baca dataset
-data = pd.read_csv('DataPenjualan.csv')
+# Memuat dataset dari file CSV
+df = pd.read_csv('penjualan_barang.csv')
 
-# Pisahkan fitur (X) dan target (y)
-X = data[['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember']]
-y = data['bahan_pokok']
+# Mengubah kolom tanggal menjadi datetime
+df['tanggal'] = pd.to_datetime(df['tanggal'])
 
-# Label Encoding untuk kolom target
-label_encoder = LabelEncoder()
-y_encoded = label_encoder.fit_transform(y)
+# Pivoting dataset untuk menghitung rata-rata kuantitas per barang per tanggal
+df_pivot = df.pivot_table(index='tanggal', columns='nama.barang', values='kuantum', aggfunc='sum').fillna(0)
 
-# Standardisasi fitur
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+# Membuat fitur tambahan: tahun, bulan, hari
+df_pivot['year'] = df_pivot.index.year
+df_pivot['month'] = df_pivot.index.month
+df_pivot['day'] = df_pivot.index.day
 
-# Pisahkan data menjadi data latih dan data uji
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
+# Fitur Musiman
+df_pivot['dayofweek'] = df_pivot.index.dayofweek
+df_pivot['quarter'] = df_pivot.index.quarter
+df_pivot['weekofyear'] = df_pivot.index.isocalendar().week
 
-# Inisialisasi model XGBoost
-xgb_model = xgb.XGBRegressor(random_state=42)
+# Fitur Transformasi Waktu
+df_pivot['sin_month'] = np.sin(2 * np.pi * df_pivot['month'] / 12)
+df_pivot['cos_month'] = np.cos(2 * np.pi * df_pivot['month'] / 12)
+df_pivot['sin_day'] = np.sin(2 * np.pi * df_pivot['day'] / 31)
+df_pivot['cos_day'] = np.cos(2 * np.pi * df_pivot['day'] / 31)
 
-# Definisikan parameter grid untuk Grid Search
+# Membuat lagged features
+df_pivot['BERAS_lag1'] = df_pivot['BERAS'].shift(1)
+df_pivot['BERAS_lag2'] = df_pivot['BERAS'].shift(2)
+
+# Membuat fitur moving average
+df_pivot['BERAS_MA7'] = df_pivot['BERAS'].rolling(window=7).mean()
+df_pivot['BERAS_MA30'] = df_pivot['BERAS'].rolling(window=30).mean()
+
+# Membuat fitur perubahan harian
+df_pivot['BERAS_diff1'] = df_pivot['BERAS'].diff(1)
+
+# Membuat fitur musiman: apakah akhir pekan
+df_pivot['is_weekend'] = df_pivot.index.dayofweek >= 5
+
+# Fitur Interaksi
+df_pivot['month_day_interaction'] = df_pivot['month'] * df_pivot['day']
+
+# Fitur Rolling Statistics
+df_pivot['BERAS_rolling_std_7'] = df_pivot['BERAS'].rolling(window=7).std()
+df_pivot['BERAS_rolling_mean_14'] = df_pivot['BERAS'].rolling(window=14).mean()
+
+# Fitur Transformasi Kuantum
+df_pivot['BERAS_log'] = np.log1p(df_pivot['BERAS'])
+
+# Drop NaN values yang dihasilkan dari lagged features dan moving average
+df_pivot.dropna(inplace=True)
+
+# Mengambil fitur dan target
+features = ['year', 'month', 'day', 'dayofweek', 'quarter', 'weekofyear', 'sin_month', 'cos_month', 
+            'sin_day', 'cos_day', 'BERAS_lag1', 'BERAS_lag2', 'BERAS_MA7', 'BERAS_MA30', 
+            'BERAS_diff1', 'is_weekend', 'month_day_interaction', 'BERAS_rolling_std_7', 
+            'BERAS_rolling_mean_14', 'BERAS_log']
+X = df_pivot[features].values
+y = df_pivot['BERAS'].values
+
+# Membagi data menjadi train dan test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Model yang lebih kompleks: Random Forest
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Prediksi
+y_pred = model.predict(X_test)
+
+# Evaluasi model
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f'Mean Squared Error (MSE): {mse}')
+print(f'R-squared (R2): {r2}')
+
+# Grid Search untuk Hyperparameter Tuning
 param_grid = {
-    'n_estimators': [50, 100, 200, 300],
-    'max_depth': [3, 5, 7, 10],
-    'learning_rate': [0.01, 0.05, 0.1, 0.2],
-    'subsample': [0.6, 0.8, 1.0],
-    'colsample_bytree': [0.6, 0.8, 1.0]
+    'n_estimators': [50, 100, 200],
+    'max_depth': [None, 10, 20, 30],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4]
 }
 
-# Inisialisasi Grid Search dengan KFold
-grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, cv=KFold(5), scoring='neg_mean_squared_error', n_jobs=-1)
+# Model Random Forest
+model = RandomForestRegressor(random_state=42)
 
-# Latih model menggunakan Grid Search
+# Grid Search
+grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
 grid_search.fit(X_train, y_train)
 
-# Cek hasil Grid Search
-if hasattr(grid_search, 'best_estimator_'):
-    # Output hasil terbaik dari Grid Search
-    best_model = grid_search.best_estimator_
-    print('Best Model:', best_model)
+# Model terbaik
+best_model = grid_search.best_estimator_
 
-    # Lakukan prediksi menggunakan model terbaik
-    y_pred = best_model.predict(X_test)
+# Prediksi dengan model terbaik
+y_pred = best_model.predict(X_test)
 
-    # Evaluasi model terbaik
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
-    print('Mean Squared Error:', mse)
-    print('Coefficient of Determination (R^2):', r2)
+# Evaluasi model
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
 
-    # Visualisasi hasil prediksi
-    plt.scatter(y_test, y_pred)
-    plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='-', linewidth=2)  # Garis 45 derajat
-    plt.xlabel('Nilai Sebenarnya')
-    plt.ylabel('Nilai Diprediksi')
-    plt.title('Nilai Sebenarnya vs Nilai Diprediksi')
-    plt.show()
-else:
-    print('Grid Search tidak berhasil menemukan model terbaik.')
+print(f'Mean Squared Error (MSE) setelah tuning: {mse}')
+print(f'R-squared (R2) setelah tuning: {r2}')
+print(f'Best Parameters: {grid_search.best_params_}')
 
-# Inisialisasi dictionary untuk menyimpan model
-models = {}
+# Visualisasi Prediksi vs. Nilai Aktual
+plt.figure(figsize=(12, 6))
+plt.scatter(y_test, y_pred, alpha=0.5)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+plt.xlabel('Nilai Aktual')
+plt.ylabel('Prediksi')
+plt.title('Prediksi vs Nilai Aktual')
+plt.show()
 
-# Lakukan training model untuk setiap bahan_pokok dengan K-Fold Cross-Validation atau LOOCV
-for bahan_pokok in data['bahan_pokok'].unique():
-    # Filter data untuk bahan_pokok tertentu
-    data_bahan = data[data['bahan_pokok'] == bahan_pokok]
-    
-    # Pisahkan fitur (X) dan target (y)
-    X = data_bahan[['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember']]
-    y = data_bahan['januari']  # Harga akan diprediksi
-    
-    # Periksa jumlah sampel
-    n_samples = X.shape[0]
-    
-    if n_samples < 2:
-        print(f'Tidak cukup sampel untuk bahan_pokok: {bahan_pokok}. Lewati.')
-        continue
-    
-    # Tentukan metode cross-validation yang sesuai
-    if n_samples < 5:
-        kf = LeaveOneOut()
-    else:
-        kf = KFold(n_splits=5, shuffle=True, random_state=42)
-    
-    # Inisialisasi model regresi linear
-    model = LinearRegression()
-    
-    # Evaluasi model menggunakan K-Fold Cross-Validation atau LOOCV
-    scores = cross_val_score(model, X, y, cv=kf, scoring='neg_mean_squared_error')
-    mean_score = -scores.mean()
-    print(f'Mean MSE for {bahan_pokok}: {mean_score}')
-    
-    # Latih model pada seluruh data untuk bahan_pokok ini
-    model.fit(X, y)
-    
-    # Simpan model dalam dictionary
-    models[bahan_pokok] = model
+# Visualisasi Prediksi dan Nilai Aktual dalam Waktu
+df_pivot['Prediksi'] = np.nan
+index_test = df_pivot.index[-len(X_test):]
+df_pivot.loc[index_test, 'Prediksi'] = y_pred
+
+plt.figure(figsize=(14, 7))
+plt.plot(df_pivot.index, df_pivot['BERAS'], label='Nilai Aktual')
+plt.plot(df_pivot.index, df_pivot['Prediksi'], label='Prediksi', linestyle='--')
+plt.xlabel('Tanggal')
+plt.ylabel('Kuantitas BERAS')
+plt.title('Prediksi vs Nilai Aktual BERAS dalam Waktu')
+plt.legend()
+plt.show()
 ```
+
 ## Performa Model
 
 ### Evaluasi Model
 
 Evaluasi model dilakukan menggunakan metrik Mean Squared Error (MSE) dan Coefficient of Determination (R^2) untuk mengukur seberapa baik model dapat memprediksi harga bahan pokok. Berikut adalah hasil evaluasi dari model XGBoost dan Linear Regression sebagai baseline:
 
-#### Hasil Evaluasi Model XGBoost
+## Performa Model
 
-- **Mean Squared Error (MSE)**: 6.07589941701037
-- **Coefficient of Determination (R^2)**: 0.09231990416613367
+Setelah proses modeling dan tuning hyperparameter, performa model dievaluasi menggunakan Mean Squared Error (MSE) dan R-squared (R2). Berikut adalah hasil evaluasi model sebelum dan setelah tuning:
 
-### Visualisasi Hasil Prediksi
+### Hasil Evaluasi Model Sebelum Tuning
 
-Visualisasi dilakukan untuk membandingkan nilai sebenarnya dengan nilai yang diprediksi oleh model. Hasil visualisasi membantu untuk mengevaluasi seberapa baik model dapat mengikuti tren data aktual.
+- **Mean Squared Error (MSE)**: 2,152,945.79
+- **R-squared (R2)**: 0.9873
 
-### Diskusi Hasil dan Kesimpulan
+### Hasil Evaluasi Model Setelah Tuning
 
-Hasil evaluasi menunjukkan bahwa model XGBoost memiliki MSE yang relatif tinggi dan nilai R^2 yang negatif, menunjukkan bahwa model tersebut belum mampu memprediksi harga dengan akurat. Perlu dilakukan optimasi lebih lanjut atau pertimbangan penggunaan model alternatif untuk mencapai hasil yang lebih baik. Penggunaan regresi linear sebagai baseline juga perlu dievaluasi lebih lanjut untuk membandingkan performanya dengan model XGBoost.
+- **Mean Squared Error (MSE)**: 733,878.32
+- **R-squared (R2)**: 0.9957
 
-Dengan demikian, evaluasi ini memberikan gambaran awal tentang kemampuan model dalam memprediksi harga bahan pokok dan memberikan arahan untuk penelitian dan pengembangan lebih lanjut.
+### Parameter Terbaik Setelah Tuning
+
+- **`max_depth`**: None
+- **`min_samples_leaf`**: 2
+- **`min_samples_split`**: 2
+- **`n_estimators`**: 100
+
+### Interpretasi
+
+- **MSE (Mean Squared Error)**: MSE yang lebih rendah setelah tuning menunjukkan bahwa model yang telah dioptimalkan memberikan prediksi yang lebih akurat dengan kesalahan yang lebih kecil dibandingkan dengan model sebelum tuning.
+- **R-squared (R2)**: Nilai R-squared yang lebih tinggi setelah tuning menunjukkan bahwa model menjelaskan proporsi variabilitas dalam data lebih baik setelah optimasi. Nilai R2 mendekati 1 menunjukkan model yang sangat baik dalam menjelaskan variabilitas data target.
+
+Dengan hasil ini, model Random Forest Regressor menunjukkan peningkatan performa yang signifikan setelah tuning hyperparameter, memberikan prediksi yang lebih akurat dan lebih sesuai dengan data aktual.
 
 
 ## Diskusi Hasil dan Kesimpulan
 
 ### Analisis Hasil
 
-Model XGBoost yang dihasilkan menunjukkan performa yang belum optimal dalam memprediksi harga bahan pokok, dengan Mean Squared Error (MSE) yang tinggi dan nilai Coefficient of Determination (R^2) yang negatif. Hal ini mengindikasikan bahwa model belum mampu mengenali pola yang kompleks dalam data harga bahan pokok.
+Model Random Forest Regressor yang diterapkan pada dataset penjualan barang menunjukkan performa yang sangat baik setelah proses tuning hyperparameter. Hasil evaluasi menunjukkan perbaikan signifikan dalam kualitas prediksi:
+
+- **Mean Squared Error (MSE)** turun dari 2,152,945.79 menjadi 733,878.32 setelah tuning. Penurunan MSE ini menunjukkan bahwa model yang telah dioptimalkan menghasilkan prediksi dengan kesalahan yang lebih kecil.
+- **R-squared (R2)** meningkat dari 0.9873 menjadi 0.9957 setelah tuning. Peningkatan R2 menunjukkan bahwa model yang telah dioptimalkan menjelaskan lebih baik variasi data target, mendekati 100%.
 
 ### Interpretasi Hasil
 
-1. **Performa Model**: Model XGBoost perlu dioptimalkan lebih lanjut dengan mempertimbangkan tuning parameter yang lebih cermat atau pilihan model alternatif yang lebih sesuai dengan karakteristik data.
-   
-2. **Keterbatasan Model**: Kinerja yang kurang optimal dapat disebabkan oleh jumlah data yang tidak mencukupi atau kompleksitas yang tidak terjangkau oleh model yang digunakan.
+- **MSE (Mean Squared Error)**: MSE yang lebih rendah setelah tuning mengindikasikan bahwa kesalahan prediksi model berkurang, dan model mampu memberikan hasil yang lebih akurat. Ini berarti bahwa model lebih tepat dalam memprediksi kuantitas barang yang terjual.
+- **R-squared (R2)**: Nilai R2 yang mendekati 1 menunjukkan bahwa model sangat efektif dalam menjelaskan variabilitas kuantitas barang yang terjual berdasarkan fitur yang diberikan. Peningkatan R2 menunjukkan peningkatan pemahaman model terhadap pola data.
 
 ### Kesimpulan
 
-Meskipun demikian, proyek ini memberikan landasan yang solid untuk penelitian lebih lanjut dalam memprediksi harga bahan pokok menggunakan pendekatan machine learning. Evaluasi ini menyoroti tantangan yang dihadapi dalam memodelkan data harga bahan pokok dan menawarkan peluang untuk meningkatkan model di masa depan.
+- Model Random Forest Regressor telah menunjukkan peningkatan performa yang signifikan setelah tuning hyperparameter, dengan kesalahan prediksi yang jauh lebih kecil dan kemampuan penjelasan yang lebih baik terhadap data.
+- Tuning hyperparameter terbukti sangat efektif dalam meningkatkan akurasi model, dengan parameter terbaik yang diidentifikasi sebagai `max_depth`: None, `min_samples_leaf`: 2, `min_samples_split`: 2, dan `n_estimators`: 100.
 
 ### Rekomendasi
 
-- **Pengembangan Model**: Melakukan eksperimen dengan model lain seperti neural networks atau ensemble methods untuk memperbaiki performa prediksi.
-  
-- **Perluasan Dataset**: Menambahkan lebih banyak atribut atau memperluas jangkauan data untuk memungkinkan model belajar dari lebih banyak pola.
+- **Implementasi Model**: Dengan performa yang sangat baik, model ini dapat diterapkan untuk peramalan kuantitas barang di masa depan untuk membantu perencanaan persediaan dan strategi pemasaran.
+- **Pemantauan dan Pemeliharaan**: Penting untuk terus memantau performa model seiring dengan perubahan data dan perilaku pasar. Model harus diperbarui dan disesuaikan jika terjadi perubahan signifikan dalam pola data.
+- **Eksplorasi Fitur Tambahan**: Pertimbangkan untuk menambahkan fitur tambahan atau melakukan ekstraksi fitur lebih lanjut untuk meningkatkan performa model lebih lanjut.
 
-Dengan demikian, proyek ini tidak hanya memberikan wawasan tentang implementasi machine learning dalam meramalkan harga bahan pokok, tetapi juga menegaskan kebutuhan akan pendekatan yang lebih canggih untuk mencapai akurasi yang lebih tinggi.
+Dengan hasil ini, model Random Forest Regressor menjadi alat yang berharga untuk memprediksi kuantitas barang dan dapat memberikan wawasan yang berguna dalam pengambilan keputusan bisnis.
+
