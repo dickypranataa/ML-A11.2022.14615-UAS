@@ -155,7 +155,7 @@ from sklearn.ensemble import RandomForestRegressor
 import matplotlib.pyplot as plt
 
 # Memuat dataset dari file CSV
-df = pd.read_csv('penjualan_barang.csv')
+df = pd.read_csv('Dataset/penjualan_barang.csv')
 
 # Mengubah kolom tanggal menjadi datetime
 df['tanggal'] = pd.to_datetime(df['tanggal'])
@@ -269,19 +269,50 @@ plt.ylabel('Prediksi')
 plt.title('Prediksi vs Nilai Aktual')
 plt.show()
 
-# Visualisasi Prediksi dan Nilai Aktual dalam Waktu
-df_pivot['Prediksi'] = np.nan
-index_test = df_pivot.index[-len(X_test):]
-df_pivot.loc[index_test, 'Prediksi'] = y_pred
+# Menyimpan indeks asli
+df_pivot['original_index'] = df_pivot.index
 
+# Mengambil fitur dan target
+features = ['year', 'month', 'day', 'dayofweek', 'quarter', 'weekofyear', 'sin_month', 'cos_month', 
+            'sin_day', 'cos_day', 'BERAS_lag1', 'BERAS_lag2', 'BERAS_MA7', 'BERAS_MA30', 
+            'BERAS_diff1', 'is_weekend', 'month_day_interaction', 'BERAS_rolling_std_7', 
+            'BERAS_rolling_mean_14', 'BERAS_log']
+X = df_pivot[features].values
+y = df_pivot['BERAS'].values
+
+# Membagi data menjadi train dan test
+X_train, X_test, y_train, y_test, train_index, test_index = train_test_split(X, y, df_pivot['original_index'], test_size=0.2, random_state=42)
+
+# Model yang lebih kompleks: Random Forest
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Prediksi
+y_pred = model.predict(X_test)
+
+# Menambahkan kolom Prediksi ke dataset df_pivot
+df_pivot['Prediksi'] = np.nan
+
+# Mengisi kolom Prediksi dengan nilai dari model
+df_pivot.loc[test_index, 'Prediksi'] = y_pred
+
+# Visualisasi Prediksi dan Nilai Aktual dalam Waktu
 plt.figure(figsize=(14, 7))
-plt.plot(df_pivot.index, df_pivot['BERAS'], label='Nilai Aktual')
-plt.plot(df_pivot.index, df_pivot['Prediksi'], label='Prediksi', linestyle='--')
+
+# Plot Nilai Aktual
+plt.plot(df_pivot.index, df_pivot['BERAS'], label='Nilai Aktual', color='blue')
+
+# Plot Prediksi
+plt.plot(df_pivot.index, df_pivot['Prediksi'], label='Prediksi', color='red', linestyle='--')
+
+# Menambahkan judul dan label
+plt.title('Prediksi vs Nilai Aktual dalam Waktu')
 plt.xlabel('Tanggal')
 plt.ylabel('Kuantitas BERAS')
-plt.title('Prediksi vs Nilai Aktual BERAS dalam Waktu')
 plt.legend()
+plt.grid(True)
 plt.show()
+
 ```
 
 ## Performa Model
